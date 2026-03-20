@@ -1,10 +1,40 @@
 const METRICS = {
-  opportunity_score: { label: 'Opportunity Score', type: 'number', digits: 1 },
-  need_index: { label: 'Need Index', type: 'number', digits: 3 },
-  population_growth_1y_pct: { label: 'Population Growth 1Y (%)', type: 'percent', digits: 2 },
-  median_age: { label: 'Median Age', type: 'number', digits: 1 },
-  median_household_income_weekly: { label: 'Median Household Income (Weekly)', type: 'currency', digits: 0 },
-  seifa_irsd_score_2021: { label: 'SEIFA IRSD Score (2021)', type: 'number', digits: 0 },
+  opportunity_score: {
+    label: 'Opportunity Score',
+    type: 'number',
+    digits: 1,
+    plainMeaning: 'Higher values suggest stronger combined access pressure and growth opportunity.',
+  },
+  need_index: {
+    label: 'Need Index',
+    type: 'number',
+    digits: 3,
+    plainMeaning: 'Higher values indicate stronger demographic pressure signals.',
+  },
+  population_growth_1y_pct: {
+    label: 'Population Growth 1Y (%)',
+    type: 'percent',
+    digits: 2,
+    plainMeaning: 'Higher values indicate faster local population growth.',
+  },
+  median_age: {
+    label: 'Median Age',
+    type: 'number',
+    digits: 1,
+    plainMeaning: 'Higher values indicate an older local population profile.',
+  },
+  median_household_income_weekly: {
+    label: 'Median Household Income (Weekly)',
+    type: 'currency',
+    digits: 0,
+    plainMeaning: 'Higher values indicate higher reported weekly household income.',
+  },
+  seifa_irsd_score_2021: {
+    label: 'SEIFA IRSD Score (2021)',
+    type: 'number',
+    digits: 0,
+    plainMeaning: 'Higher values indicate relatively lower disadvantage in this index.',
+  },
 };
 
 const state = {
@@ -37,6 +67,13 @@ const el = {
   topChart: document.getElementById('topChart'),
   tradeoffChart: document.getElementById('tradeoffChart'),
   sourceList: document.getElementById('sourceList'),
+  legendMetricLine: document.getElementById('legendMetricLine'),
+  legendLow: document.getElementById('legendLow'),
+  legendHigh: document.getElementById('legendHigh'),
+  statCatchments: document.getElementById('statCatchments'),
+  statDpaShare: document.getElementById('statDpaShare'),
+  statMedianScore: document.getElementById('statMedianScore'),
+  statMetricRange: document.getElementById('statMetricRange'),
 };
 
 function setLoading(message, pct = null) {
@@ -106,6 +143,20 @@ function metricStops(metricKey, rows) {
   return { low, mid, high: Math.max(high, low + 1e-6) };
 }
 
+function median(values) {
+  if (!values.length) {
+    return NaN;
+  }
+
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  if (sorted.length % 2 === 0) {
+    return (sorted[mid - 1] + sorted[mid]) / 2;
+  }
+
+  return sorted[mid];
+}
+
 function metricColorExpression(metricKey, rows) {
   const stops = metricStops(metricKey, rows);
 
@@ -149,6 +200,54 @@ function renderSourceList() {
       return `<li><strong>${source.publisher}</strong>: ${source.description} (${release})</li>`;
     })
     .join('');
+}
+
+function renderLegend() {
+  const metricMeta = METRICS[state.selectedMetric] ?? { label: state.selectedMetric, plainMeaning: '' };
+  const stops = metricStops(state.selectedMetric, state.filteredRows);
+
+  if (el.legendMetricLine) {
+    const suffix = metricMeta.plainMeaning ? ` ${metricMeta.plainMeaning}` : '';
+    el.legendMetricLine.textContent =
+      `${metricMeta.label}: red = lower values, green = higher values in the current filtered view.${suffix}`;
+  }
+
+  if (el.legendLow) {
+    el.legendLow.textContent = `Low ${formatMetricValue(state.selectedMetric, stops.low)}`;
+  }
+
+  if (el.legendHigh) {
+    el.legendHigh.textContent = `High ${formatMetricValue(state.selectedMetric, stops.high)}`;
+  }
+}
+
+function renderSnapshot() {
+  const rows = state.filteredRows;
+  const count = rows.length;
+  const dpaCount = rows.filter((row) => row.dpa_gp_status_2025 === 'Y').length;
+  const scoreMedian = median(
+    rows
+      .map((row) => Number(row.opportunity_score))
+      .filter((value) => Number.isFinite(value)),
+  );
+  const metricSpread = metricStops(state.selectedMetric, rows);
+
+  if (el.statCatchments) {
+    el.statCatchments.textContent = num(count, 0);
+  }
+
+  if (el.statDpaShare) {
+    el.statDpaShare.textContent = count ? `${num((dpaCount / count) * 100, 1)}%` : 'N/A';
+  }
+
+  if (el.statMedianScore) {
+    el.statMedianScore.textContent = Number.isFinite(scoreMedian) ? num(scoreMedian, 1) : 'N/A';
+  }
+
+  if (el.statMetricRange) {
+    el.statMetricRange.textContent =
+      `${formatMetricValue(state.selectedMetric, metricSpread.low)} - ${formatMetricValue(state.selectedMetric, metricSpread.high)}`;
+  }
 }
 
 function initSelectors() {
@@ -263,6 +362,7 @@ function initMap() {
         `<div class="map-pop"><strong>${row.catchment_name || 'Catchment'}</strong>`,
         `${row.state || ''} | DPA ${row.dpa_gp_status_2025 || 'N/A'}<br/>`,
         `Opportunity: ${formatMetricValue('opportunity_score', Number(row.opportunity_score))}<br/>`,
+        `${METRICS[state.selectedMetric]?.label || 'Selected metric'}: ${formatMetricValue(state.selectedMetric, Number(row[state.selectedMetric]))}<br/>`,
         `Need Index: ${formatMetricValue('need_index', Number(row.need_index))}`,
         '</div>',
       ].join('');
@@ -513,6 +613,8 @@ function refresh() {
   applyFilters();
   updateMapData();
   updatePolygonLayer();
+  renderLegend();
+  renderSnapshot();
   renderSelectedCatchment();
   renderCharts();
 }
@@ -526,6 +628,8 @@ function bindEvents() {
   el.metricSelect.addEventListener('change', () => {
     state.selectedMetric = el.metricSelect.value;
     updateColorStyling();
+    renderLegend();
+    renderSnapshot();
     renderSelectedCatchment();
   });
 
@@ -578,6 +682,8 @@ async function init() {
     initMap();
 
     applyFilters();
+    renderLegend();
+    renderSnapshot();
     renderSelectedCatchment();
     renderCharts();
     setLoading('Loading interactive map...', 65);

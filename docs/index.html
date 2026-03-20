@@ -35,9 +35,45 @@
           </div>
         </div>
         <div id="map"></div>
+        <div class="map-legend" id="mapLegend">
+          <h3>How To Read The Map</h3>
+          <p id="legendMetricLine">Colour scale is based on Opportunity Score in the current view.</p>
+          <div class="legend-ramp">
+            <span id="legendLow">Low</span>
+            <div class="legend-gradient" aria-hidden="true"></div>
+            <span id="legendHigh">High</span>
+          </div>
+          <div class="legend-notes">
+            <span><i class="dot-symbol" aria-hidden="true"></i> Circle: GP catchment centre point</span>
+            <span><i class="poly-symbol" aria-hidden="true"></i> Shaded polygon: official GP catchment</span>
+            <span><i class="selected-symbol" aria-hidden="true"></i> White ring: your selected catchment</span>
+          </div>
+        </div>
       </section>
 
       <aside class="panel-card">
+        <section>
+          <h3>National Snapshot</h3>
+          <div class="snapshot-grid">
+            <div class="snapshot-card">
+              <div class="label">Catchments in view</div>
+              <div class="value" id="statCatchments">-</div>
+            </div>
+            <div class="snapshot-card">
+              <div class="label">DPA shortage share</div>
+              <div class="value" id="statDpaShare">-</div>
+            </div>
+            <div class="snapshot-card">
+              <div class="label">Median opportunity score</div>
+              <div class="value" id="statMedianScore">-</div>
+            </div>
+            <div class="snapshot-card">
+              <div class="label">Selected metric range</div>
+              <div class="value" id="statMetricRange">-</div>
+            </div>
+          </div>
+        </section>
+
         <section>
           <h3>Controls</h3>
           <div class="grid-2">
@@ -107,6 +143,16 @@
           <li>Switch to one state to load detailed polygons and inspect local catchments.</li>
           <li>Toggle the metric selector to stress-test rankings by growth, age, income, or disadvantage.</li>
           <li>Click a point to open full catchment metrics and compare with chart evidence.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Map Legend In Plain English</summary>
+        <ul>
+          <li><strong>Colour ramp</strong>: red = lower values, green = higher values for the selected metric.</li>
+          <li><strong>Circle markers</strong>: one marker per official GP catchment.</li>
+          <li><strong>Shaded polygons</strong>: official catchment boundaries for the selected state.</li>
+          <li><strong>White ring</strong>: currently selected catchment.</li>
         </ul>
       </details>
 

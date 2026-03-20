@@ -1,11 +1,12 @@
 :root {
   --bg: #f5f4ee;
-  --card: rgba(255, 255, 255, 0.9);
+  --card: rgba(255, 255, 255, 0.94);
   --ink: #13231c;
   --muted: #4b5f54;
-  --line: rgba(19, 35, 28, 0.14);
+  --line: rgba(19, 35, 28, 0.17);
   --brand: #0d8f6f;
   --brand-2: #f16f3d;
+  --brand-3: #f0c45d;
   --ok: #1f8f4b;
   --warn: #b55f16;
   --bad: #8f1f1f;
@@ -19,7 +20,10 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: radial-gradient(circle at 0% 0%, #fff9ee 0%, var(--bg) 55%);
+  background:
+    radial-gradient(circle at 0% 0%, #fff9ee 0%, rgba(255, 244, 221, 0.55) 34%, transparent 70%),
+    radial-gradient(circle at 95% 0%, rgba(199, 245, 229, 0.7) 0%, transparent 45%),
+    var(--bg);
   color: var(--ink);
   font-family: 'Source Sans 3', sans-serif;
 }
@@ -87,10 +91,11 @@ h1 {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(19, 35, 28, 0.08);
+  box-shadow: 0 12px 30px rgba(19, 35, 28, 0.09);
 }
 
 .map-card {
+  position: relative;
   overflow: hidden;
 }
 
@@ -131,6 +136,7 @@ h1 {
 
 #map {
   height: min(72vh, 760px);
+  filter: saturate(1.08) contrast(1.02);
 }
 
 .panel-card {
@@ -145,7 +151,7 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0.7rem;
-  background: #fff;
+  background: linear-gradient(160deg, #ffffff, #f8fbf9);
 }
 
 .panel-card section h3 {
@@ -236,7 +242,7 @@ button:hover {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 0.4rem;
-  background: #f8faf8;
+  background: #f5faf7;
 }
 
 .metric .label {
@@ -253,6 +259,120 @@ button:hover {
 .chart {
   width: 100%;
   height: 230px;
+}
+
+.snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.snapshot-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 0.45rem;
+  background: linear-gradient(150deg, #ffffff, #f4f9f6);
+}
+
+.snapshot-card .label {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.snapshot-card .value {
+  margin-top: 0.18rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.map-legend {
+  position: absolute;
+  left: 0.85rem;
+  bottom: 0.9rem;
+  width: min(360px, calc(100% - 1.7rem));
+  background: rgba(255, 255, 255, 0.93);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(17, 33, 27, 0.16);
+  padding: 0.62rem 0.72rem;
+  z-index: 3;
+}
+
+.map-legend h3 {
+  margin: 0;
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #2f4a3f;
+}
+
+.map-legend p {
+  margin: 0.28rem 0 0;
+  color: var(--muted);
+  font-size: 0.81rem;
+  line-height: 1.35;
+}
+
+.legend-ramp {
+  margin-top: 0.48rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.52rem;
+  align-items: center;
+}
+
+.legend-ramp span {
+  font-size: 0.74rem;
+  color: #335244;
+  font-weight: 600;
+}
+
+.legend-gradient {
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e25f35, #f0c45d, #0a9170);
+  border: 1px solid rgba(9, 43, 34, 0.22);
+}
+
+.legend-notes {
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.24rem;
+}
+
+.legend-notes span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #395a4b;
+  font-size: 0.75rem;
+}
+
+.dot-symbol,
+.poly-symbol,
+.selected-symbol {
+  display: inline-block;
+  width: 0.82rem;
+  height: 0.82rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.dot-symbol {
+  background: #0a9170;
+  border: 1px solid #0d271e;
+}
+
+.poly-symbol {
+  border-radius: 3px;
+  background: rgba(10, 145, 112, 0.42);
+  border: 1px solid #34584a;
+}
+
+.selected-symbol {
+  background: #ffffff;
+  border: 2px solid #0d271e;
 }
 
 .guide-card {
@@ -310,6 +430,10 @@ button:hover {
   #map {
     height: 58vh;
   }
+
+  .map-legend {
+    width: min(430px, calc(100% - 1.7rem));
+  }
 }
 
 @media (max-width: 640px) {
@@ -351,5 +475,15 @@ button:hover {
   .toggle-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-legend {
+    position: static;
+    width: auto;
+    margin: 0.65rem;
   }
 }
