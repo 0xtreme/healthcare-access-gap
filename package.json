@@ -1,0 +1,16 @@
+{
+  "name": "healthcare-access-gap",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Australia-wide healthcare access gap intelligence app using official public datasets",
+  "scripts": {
+    "fetch:data": "node scripts/fetch-data.mjs",
+    "build:data": "node scripts/build-dataset.mjs",
+    "sync:pages": "node scripts/sync-pages-assets.mjs",
+    "build": "npm run fetch:data && npm run build:data && npm run sync:pages"
+  },
+  "dependencies": {
+    "@turf/simplify": "^7.3.0",
+    "shapefile": "^0.6.6"
+  }
+}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Australia Healthcare Access Gap Finder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Australia-Wide</p>
+        <h1>Healthcare Access Gap Finder</h1>
+        <p class="subhead">GP catchments + DPA priority + demographics + growth</p>
+      </div>
+      <div class="load-chip" id="loadChip">Starting data load...</div>
+    </header>
+
+    <main class="layout">
+      <section class="map-card">
+        <div class="map-head">
+          <div>
+            <h2>Access Opportunity Map</h2>
+            <p id="coverageLine">Preparing map layers...</p>
+          </div>
+          <div class="progress-shell" aria-label="data loading progress">
+            <div id="loadProgress" class="progress-fill"></div>
+          </div>
+        </div>
+        <div id="map"></div>
+      </section>
+
+      <aside class="panel-card">
+        <section>
+          <h3>Controls</h3>
+          <div class="grid-2">
+            <label>
+              <span>State</span>
+              <select id="stateSelect"></select>
+            </label>
+            <label>
+              <span>DPA Status</span>
+              <select id="dpaFilter">
+                <option value="ALL">All</option>
+                <option value="Y">DPA = Yes</option>
+                <option value="N">DPA = No</option>
+              </select>
+            </label>
+            <label class="span-2">
+              <span>Metric</span>
+              <select id="metricSelect"></select>
+            </label>
+            <label class="span-2">
+              <span>Search Catchment</span>
+              <input id="searchInput" type="search" placeholder="Type catchment or SA2 name" />
+            </label>
+          </div>
+          <div class="toggle-row">
+            <label class="switch">
+              <input id="showPolygons" type="checkbox" checked />
+              <span>Show catchment polygons (loads by selected state)</span>
+            </label>
+            <button id="resetView" type="button">Reset View</button>
+          </div>
+        </section>
+
+        <section>
+          <h3>Selected Catchment</h3>
+          <h4 id="selectedTitle">Click a map point</h4>
+          <p id="selectedMeta">Catchment details appear here.</p>
+          <div id="selectedMetrics" class="metric-grid"></div>
+        </section>
+
+        <section>
+          <h3>Evidence Charts</h3>
+          <div id="topChart" class="chart"></div>
+          <div id="tradeoffChart" class="chart"></div>
+        </section>
+      </aside>
+    </main>
+
+    <section class="guide-card">
+      <details open>
+        <summary>How It Works</summary>
+        <ul>
+          <li>Base geography is the official General Practitioner Catchments (GPC 2023) for all of Australia.</li>
+          <li>DPA status comes from the official Distribution Priority Area (GPs 2025) dataset.</li>
+          <li>Each catchment is linked to SA2 demographic context (median age, income, growth, disadvantage).</li>
+          <li>
+            Opportunity score blends official GP shortage signal (DPA) with demographic pressure indicators so users can
+            compare where unmet demand is likely strongest.
+          </li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>How To Use</summary>
+        <ul>
+          <li>Start in <strong>All States</strong> to identify national hotspots.</li>
+          <li>Switch to one state to load detailed polygons and inspect local catchments.</li>
+          <li>Toggle the metric selector to stress-test rankings by growth, age, income, or disadvantage.</li>
+          <li>Click a point to open full catchment metrics and compare with chart evidence.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Metric Glossary</summary>
+        <ul>
+          <li><strong>DPA</strong>: Distribution Priority Area status for GPs (Y = shortage priority area).</li>
+          <li><strong>SA2</strong>: Statistical Area Level 2, an ABS standard region used for local statistics.</li>
+          <li><strong>IRSD</strong>: SEIFA Index of Relative Socio-economic Disadvantage.</li>
+          <li><strong>Need Index</strong>: Weighted percentile mix of age, growth, low-income, and disadvantage pressure.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>Data Sources</summary>
+        <ul id="sourceList">
+          <li>Loading source manifest...</li>
+        </ul>
+      </details>
+    </section>
+
+    <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

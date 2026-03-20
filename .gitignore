@@ -1,0 +1,12 @@
+node_modules
+.tmp
+.DS_Store
+data/raw/*.zip
+data/raw/*.shp
+data/raw/*.shx
+data/raw/*.dbf
+data/raw/*.prj
+
+# Raw source downloads
+data/raw/*
+!data/raw/.gitkeep
