@@ -81,8 +81,14 @@ h1 {
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 420px;
-  gap: 0.9rem;
+  gap: 0.75rem;
   align-items: start;
+}
+
+.left-stack {
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
 }
 
 .map-card,
@@ -135,15 +141,15 @@ h1 {
 }
 
 #map {
-  height: min(72vh, 760px);
+  height: min(62vh, 640px);
   filter: saturate(1.08) contrast(1.02);
 }
 
 .panel-card {
-  padding: 0.9rem;
+  padding: 0.78rem;
   display: grid;
-  gap: 0.9rem;
-  max-height: min(78vh, 980px);
+  gap: 0.72rem;
+  max-height: calc(100vh - 7rem);
   overflow: auto;
 }
 
@@ -156,7 +162,7 @@ h1 {
 
 .panel-card section h3 {
   font-size: 0.95rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.45rem;
 }
 
 .grid-2 {
@@ -258,7 +264,7 @@ button:hover {
 
 .chart {
   width: 100%;
-  height: 230px;
+  height: 205px;
 }
 
 .snapshot-grid {
@@ -382,13 +388,13 @@ button:hover {
 }
 
 .guide-card {
-  margin-top: 0.9rem;
-  padding: 0.4rem 0.8rem;
+  margin-top: 0;
+  padding: 0.3rem 0.72rem;
 }
 
 .guide-card details {
   border-bottom: 1px solid var(--line);
-  padding: 0.45rem 0;
+  padding: 0.36rem 0;
 }
 
 .guide-card details:last-child {

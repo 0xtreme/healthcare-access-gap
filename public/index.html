@@ -25,32 +25,86 @@
     </header>
 
     <main class="layout">
-      <section class="map-card">
-        <div class="map-head">
-          <div>
-            <h2>Access Opportunity Map</h2>
-            <p id="coverageLine">Preparing map layers...</p>
+      <div class="left-stack">
+        <section class="map-card">
+          <div class="map-head">
+            <div>
+              <h2>Access Opportunity Map</h2>
+              <p id="coverageLine">Preparing map layers...</p>
+            </div>
+            <div class="progress-shell" aria-label="data loading progress">
+              <div id="loadProgress" class="progress-fill"></div>
+            </div>
           </div>
-          <div class="progress-shell" aria-label="data loading progress">
-            <div id="loadProgress" class="progress-fill"></div>
-          </div>
-        </div>
-        <div id="map"></div>
-        <div class="map-legend" id="mapLegend">
-          <h3>How To Read The Map</h3>
-          <p id="legendMetricLine">Colour scale is based on Opportunity Score in the current view.</p>
-          <div class="legend-ramp">
-            <span id="legendLow">Low</span>
-            <div class="legend-gradient" aria-hidden="true"></div>
-            <span id="legendHigh">High</span>
+          <div id="map"></div>
+          <div class="map-legend" id="mapLegend">
+            <h3>How To Read The Map</h3>
+            <p id="legendMetricLine">Colour scale is based on Opportunity Score in the current view.</p>
+            <div class="legend-ramp">
+              <span id="legendLow">Low</span>
+              <div class="legend-gradient" aria-hidden="true"></div>
+              <span id="legendHigh">High</span>
           </div>
           <div class="legend-notes">
-            <span><i class="dot-symbol" aria-hidden="true"></i> Circle: GP catchment centre point</span>
+            <span><i class="dot-symbol" aria-hidden="true"></i> Circle: GP catchment centre point (larger = bigger population)</span>
             <span><i class="poly-symbol" aria-hidden="true"></i> Shaded polygon: official GP catchment</span>
             <span><i class="selected-symbol" aria-hidden="true"></i> White ring: your selected catchment</span>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
+
+        <section class="guide-card">
+          <details open>
+            <summary>How It Works</summary>
+            <ul>
+              <li>Base geography is the official General Practitioner Catchments (GPC 2023) for all of Australia.</li>
+              <li>DPA status comes from the official Distribution Priority Area (GPs 2025) dataset.</li>
+              <li>Each catchment is linked to SA2 demographic context (median age, income, growth, disadvantage).</li>
+              <li>
+                Opportunity score blends official GP shortage signal (DPA) with demographic pressure indicators so users can
+                compare where unmet demand is likely strongest.
+              </li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>How To Use</summary>
+            <ul>
+              <li>Start in <strong>All States</strong> to identify national hotspots.</li>
+              <li>Switch to one state to load detailed polygons and inspect local catchments.</li>
+              <li>Toggle the metric selector to stress-test rankings by growth, age, income, or disadvantage.</li>
+              <li>Click a point to open full catchment metrics and compare with chart evidence.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Map Legend</summary>
+            <ul>
+              <li><strong>Colour ramp</strong>: red = lower values, green = higher values for the selected metric.</li>
+              <li><strong>Circle markers</strong>: one marker per official GP catchment (larger circles = larger population).</li>
+              <li><strong>Shaded polygons</strong>: official catchment boundaries for the selected state.</li>
+              <li><strong>White ring</strong>: currently selected catchment.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Metric Glossary</summary>
+            <ul>
+              <li><strong>DPA</strong>: Distribution Priority Area status for GPs (Y = shortage priority area).</li>
+              <li><strong>SA2</strong>: Statistical Area Level 2, an ABS standard region used for local statistics.</li>
+              <li><strong>IRSD</strong>: SEIFA Index of Relative Socio-economic Disadvantage.</li>
+              <li><strong>Need Index</strong>: Weighted percentile mix of age, growth, low-income, and disadvantage pressure.</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>Data Sources</summary>
+            <ul id="sourceList">
+              <li>Loading source manifest...</li>
+            </ul>
+          </details>
+        </section>
+      </div>
 
       <aside class="panel-card">
         <section>
@@ -122,58 +176,6 @@
         </section>
       </aside>
     </main>
-
-    <section class="guide-card">
-      <details open>
-        <summary>How It Works</summary>
-        <ul>
-          <li>Base geography is the official General Practitioner Catchments (GPC 2023) for all of Australia.</li>
-          <li>DPA status comes from the official Distribution Priority Area (GPs 2025) dataset.</li>
-          <li>Each catchment is linked to SA2 demographic context (median age, income, growth, disadvantage).</li>
-          <li>
-            Opportunity score blends official GP shortage signal (DPA) with demographic pressure indicators so users can
-            compare where unmet demand is likely strongest.
-          </li>
-        </ul>
-      </details>
-
-      <details>
-        <summary>How To Use</summary>
-        <ul>
-          <li>Start in <strong>All States</strong> to identify national hotspots.</li>
-          <li>Switch to one state to load detailed polygons and inspect local catchments.</li>
-          <li>Toggle the metric selector to stress-test rankings by growth, age, income, or disadvantage.</li>
-          <li>Click a point to open full catchment metrics and compare with chart evidence.</li>
-        </ul>
-      </details>
-
-      <details>
-        <summary>Map Legend</summary>
-        <ul>
-          <li><strong>Colour ramp</strong>: red = lower values, green = higher values for the selected metric.</li>
-          <li><strong>Circle markers</strong>: one marker per official GP catchment.</li>
-          <li><strong>Shaded polygons</strong>: official catchment boundaries for the selected state.</li>
-          <li><strong>White ring</strong>: currently selected catchment.</li>
-        </ul>
-      </details>
-
-      <details>
-        <summary>Metric Glossary</summary>
-        <ul>
-          <li><strong>DPA</strong>: Distribution Priority Area status for GPs (Y = shortage priority area).</li>
-          <li><strong>SA2</strong>: Statistical Area Level 2, an ABS standard region used for local statistics.</li>
-          <li><strong>IRSD</strong>: SEIFA Index of Relative Socio-economic Disadvantage.</li>
-          <li><strong>Need Index</strong>: Weighted percentile mix of age, growth, low-income, and disadvantage pressure.</li>
-        </ul>
-      </details>
-
-      <details>
-        <summary>Data Sources</summary>
-        <ul id="sourceList">
-          <li>Loading source manifest...</li>
-        </ul>
-      </details>
-    </section>
 
     <script src="https://unpkg.com/maplibre-gl@5.11.0/dist/maplibre-gl.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
